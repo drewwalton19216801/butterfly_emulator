@@ -1,11 +1,8 @@
-use std::ops::Range;
-use std::{cell::RefCell, rc::Rc};
-
 use cpu6502::Cpu;
-use cpu6502::bus::Hook;
 
-// Global variable for the LED strip
-static mut LED_STRIP: [bool; 8] = [false; 8];
+use self::devices::bus::MainBus;
+
+pub mod devices;
 pub struct Emulator {
     pub cpu: Cpu,
 }
@@ -13,33 +10,58 @@ pub struct Emulator {
 impl Emulator {
     pub fn new() -> Self {
         Self {
-            cpu: Cpu::new(),
+            cpu: Cpu::new(Box::new(MainBus::new())),
         }
     }
 
-    pub fn run(&mut self) {
-        // Register a write hook
-        self.cpu.bus.add_hook_range(
-            Range {
-                start: 0x6000,
-                end: 0x6002,
-            },
-            Hook {
-                read: None,
-                write: Some(Rc::new(RefCell::new(Self::blink_led))),
-            }
-        );
+    pub fn run(&mut self, speed_mhz: f64, num_cycles: Option<u64>) {
+        let mut cycles_left = num_cycles.unwrap_or(u64::MAX);
 
-        // Change variant to CMOS
-        self.cpu.change_variant(cpu6502::Variant::CMOS);
+        // Calculate the number of cycles to run per second
+        let cycles_per_second = speed_mhz * 1_000_000.0;
 
-        // Reset the cpu
-        self.cpu.reset();
+        // Clock the CPU until we run out of cycles
+        while cycles_left > 0 {
+            self.cpu.clock();
+            cycles_left -= 1;
+            std::thread::sleep(std::time::Duration::from_secs_f64(1.0 / cycles_per_second));
+        }
+    }
 
-        // Clock the CPU for 100 cycles
-        for _ in 0..100 {
+    pub fn benchmark(&mut self) {
+        println!("Running benchmark...");
+        let num_cycles = 200_000_000;
+
+        println!("Running for {} cycles...", num_cycles);
+        // Start a timer
+        let start = std::time::Instant::now();
+
+        for _ in 0..num_cycles {
             self.cpu.clock();
         }
+
+        let end = std::time::Instant::now();
+        let time_elapsed = end.duration_since(start);
+        println!("Benchmark complete. Calculating results...");
+
+        let cycles_per_second = num_cycles as f64 / time_elapsed.as_secs_f64();
+
+        // This is VERY generic, but it's reasonale to assume that the CPU will execute, on average,
+        // 6 cycles per instruction
+        let instructions_per_second = cycles_per_second / 6.0;
+
+        let calculated_speed_mhz = cycles_per_second / 1_000_000.0;
+
+        // Print the results
+        println!("Cycles per second: {}", cycles_per_second);
+        println!(
+            "Average instructions per second*: {}",
+            instructions_per_second
+        );
+        println!("Time elapsed: {:?}", time_elapsed);
+        println!("MHz: {}", calculated_speed_mhz);
+        println!("");
+        println!("* This is the average number of instructions per second, as not all instructions take the same number of cycles.");
     }
 
     pub fn change_variant(&mut self, variant: String) {
@@ -52,33 +74,9 @@ impl Emulator {
     }
 
     pub fn load_rom_from_path(&mut self, path: &str, address: u16) {
+        println!("Loading ROM from path: {}", path);
         let rom = std::fs::read(path).unwrap();
+        // MainBus::load_rom_at(&mut self.bus, &rom, address);
         self.cpu.bus.load_rom_at(&rom, address);
-    }
-
-    pub fn blink_led(address: u16, data: u8) {
-        // If the address is 0x6002 and the data is 0xFF, then we want to turn on the LED
-        if address == 0x6002 && data == 0xFF {
-            unsafe {
-                LED_STRIP[0] = true;
-            }
-        }
-
-        // If the address is 0x6000, we want to enable the LED bits according to the data
-        if address == 0x6000 {
-            unsafe {
-                for i in 0..8 {
-                    LED_STRIP[i] = (data & (1 << i)) != 0;
-                }
-            }
-        }
-
-        // Print the LED strip
-        unsafe {
-            for i in 0..8 {
-                print!("{}", if LED_STRIP[i] { "█" } else { " " });
-            }
-            println!();
-        }
     }
 }
