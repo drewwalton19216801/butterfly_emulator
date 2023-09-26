@@ -18,7 +18,7 @@ By running the following command, you can run a very very unsophisticated benchm
     cargo run -- --benchmark
 ### Command-line options
 
-    Usage: emulator [OPTIONS]
+    Usage: butterfly_emulator [OPTIONS]
     Options:
       -r, --rom: The path to the ROM file to load
       -a, --address: The address to load the ROM at (default: 0xC000)
