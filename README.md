@@ -9,7 +9,7 @@ Build like you would any other Rust project:
     cargo build
 
 ## Running
-A modified version of Ben Eater's blink.asm is provided in demos/blink.asm, and will automatically run for 1000 cycles by simply running the following:
+A modified version of Ben Eater's blink.asm is provided in demos/blink.asm, and will automatically run by simply running the following:
 
     cargo run
 ### Benchmarking
