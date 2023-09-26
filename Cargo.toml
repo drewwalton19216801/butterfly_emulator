@@ -1,0 +1,10 @@
+[package]
+name = "butterfly_emulator"
+authors = ["Drew Walton <drewwalton19216801@gmail.com>"]
+description = "A simple 6502 emulator written in Rust."
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+argparse = "0.2.2"
+cpu6502 = { git = "https://github.com/drewwalton19216801/cpu6502.git", branch = "dev" }
