@@ -19,4 +19,4 @@ dependencies = [
 [[package]]
 name = "cpu6502"
 version = "0.1.0"
-source = "git+https://github.com/drewwalton19216801/cpu6502.git?branch=dev#952f5496848200f588df54ba4e4476c50c1726de"
+source = "git+https://github.com/drewwalton19216801/cpu6502.git?branch=dev#088aa0dd0665f55444c2c2f86d8668f911d1b37f"
