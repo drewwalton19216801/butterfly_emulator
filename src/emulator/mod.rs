@@ -1,5 +1,7 @@
 use cpu6502::Cpu;
 
+use crate::emulator::devices::rom::Rom;
+
 use self::devices::bus::MainBus;
 
 pub mod devices;
@@ -28,8 +30,15 @@ impl Emulator {
         }
     }
 
-    pub fn benchmark(&mut self) {
-        println!("Running benchmark...");
+    pub fn benchmark(&mut self, rom_path: String, address: u16, variant: String) {
+        self.cpu.bus.add_device(Box::new(Rom::new()));
+
+        self.load_rom_from_path(&rom_path, address);
+
+        self.cpu.reset();
+        self.change_variant(variant);
+
+        println!("Running CPU benchmark...");
         let num_cycles = 200_000_000;
 
         println!("Running for {} cycles...", num_cycles);

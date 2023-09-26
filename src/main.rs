@@ -11,6 +11,12 @@ fn main() {
     // Create the emulator
     let mut emulator = Emulator::new();
 
+    // If benchmark mode is enabled, run the benchmark
+    if benchmark_mode {
+        emulator.benchmark(rom_path, address, variant);
+        std::process::exit(0);
+    }
+
     emulator
         .cpu
         .bus
@@ -29,12 +35,6 @@ fn main() {
 
     // Change the variant of the CPU
     emulator.change_variant(variant);
-
-    // If benchmark mode is enabled, run the benchmark
-    if benchmark_mode {
-        emulator.benchmark();
-        std::process::exit(0);
-    }
 
     // Run the emulator
     emulator.run(speed, None);
