@@ -1,4 +1,4 @@
-# rusty502 6502-based emulator
+# Butterfly 6502-based emulator
 ## What is this?
 It's an emulator designed to emulate a 6502 CPU and various peripherals.
 ## Why is this?
