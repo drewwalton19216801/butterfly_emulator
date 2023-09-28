@@ -10,9 +10,9 @@ pub struct Emulator {
 }
 
 impl Emulator {
-    pub fn new() -> Self {
+    pub fn new(debug: bool) -> Self {
         Self {
-            cpu: Cpu::new(Box::new(MainBus::new())),
+            cpu: Cpu::new(Box::new(MainBus::new()), debug),
         }
     }
 

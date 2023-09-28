@@ -1,21 +1,26 @@
 use std::env;
 
-use emulator::{Emulator, devices::{led_blink::LedBlink, rom::Rom}};
+use emulator::{Emulator, devices::{led_blink::LedBlink, rom::Rom, ram32k::Ram32k}};
 
 mod emulator;
-fn main() {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Parse the command line arguments
     let args: Vec<String> = env::args().collect();
-    let (rom_path, address, variant, speed, benchmark_mode) = parse_args(args);
+    let (rom_path, address, debug, variant, speed, benchmark_mode) = parse_args(args);
 
     // Create the emulator
-    let mut emulator = Emulator::new();
+    let mut emulator = Emulator::new(debug);
 
     // If benchmark mode is enabled, run the benchmark
     if benchmark_mode {
         emulator.benchmark(rom_path, address, variant);
         std::process::exit(0);
     }
+
+    emulator
+        .cpu
+        .bus
+        .add_device(Box::new(Ram32k::new()));
 
     emulator
         .cpu
@@ -44,17 +49,19 @@ fn main() {
     emulator.load_file_from_path("demos/blink.bin");
     emulator.run();
     */
+    return Ok(());
 }
 
-fn parse_args(args: Vec<String>) -> (String, u16, String, f64, bool) {
+fn parse_args(args: Vec<String>) -> (String, u16, bool, String, f64, bool) {
     // Set the default values
     let mut rom_path = String::from("demos/blink.bin");
     let mut address = 0xC000;
     let mut variant = String::from("CMOS");
     let mut speed = 0.000100; // 100 Hz
     let mut benchmark_mode = false;
+    let mut debug = false;
 
-    // Parse the arguments
+    // Parse the arguments in whatever order they're given
     let mut i = 1;
     while i < args.len() {
         match args[i].as_str() {
@@ -77,21 +84,25 @@ fn parse_args(args: Vec<String>) -> (String, u16, String, f64, bool) {
             "-b" | "--benchmark" => {
                 benchmark_mode = true;
             }
+            "-d" | "--debug" => {
+                debug = true;
+            }
             "-h" | "--help" => {
                 print_help();
                 std::process::exit(0);
             }
             _ => {
-                println!("Invalid argument: {}", args[i]);
+                println!("Unknown argument: {}", args[i]);
                 print_help();
                 std::process::exit(1);
             }
         }
+
         i += 1;
     }
 
     // Return the parsed arguments
-    (rom_path, address, variant, speed, benchmark_mode)
+    (rom_path, address, debug, variant, speed, benchmark_mode)
 }
 
 fn print_help() {
