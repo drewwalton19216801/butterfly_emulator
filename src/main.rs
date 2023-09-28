@@ -44,11 +44,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Run the emulator
     emulator.run(speed, None);
 
-    /*
-    let mut emulator = emulator::emulator::Emulator::new();
-    emulator.load_file_from_path("demos/blink.bin");
-    emulator.run();
-    */
     return Ok(());
 }
 
@@ -108,12 +103,14 @@ fn parse_args(args: Vec<String>) -> (String, u16, bool, String, f64, bool) {
 fn print_help() {
     println!("Usage: emulator [OPTIONS]");
     println!("Options:");
-    println!("  -r, --rom: The path to the ROM file to load");
+    println!("  -r, --rom: The path to the ROM file to load (default: demos/blink.bin)");
     println!("  -a, --address: The address to load the ROM at (default: 0xC000)");
+    println!("  -d, --debug: Enables debugging output (default: false)");
     println!("  -v, --variant: The variant of the CPU to use");
     println!("     - NMOS: The MMOS 6502 CPU");
     println!("     - CMOS: The CMOS 65C02 CPU (default)");
     println!("     - NES: The NES CPU (Ricoh 2A03)");
+    println!("  -s, --speed: The speed to run the emulator at in Hz (default: 100)");
     println!(
         "  -b, --benchmark: Runs demos/blink.bin for 200,000,000 cycles and prints the results"
     );
