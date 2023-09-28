@@ -22,8 +22,16 @@ impl Emulator {
         // Calculate the number of cycles to run per second
         let cycles_per_second = speed_mhz * 1_000_000.0;
 
+        let mut disassembly_displayed = false;
+
         // Clock the CPU until we run out of cycles
         while cycles_left > 0 {
+            if !disassembly_displayed {
+                // Print the disassembly string
+                println!("{}", self.cpu.current_instruction_string);
+                // Set the flag
+                disassembly_displayed = true;
+            }
             self.cpu.clock();
             cycles_left -= 1;
             std::thread::sleep(std::time::Duration::from_secs_f64(1.0 / cycles_per_second));

@@ -82,7 +82,7 @@ impl Device for LedBlink {
 
     fn write(&mut self, _force_write: bool) {
         // If we wrote 0xFF to address 8002, enable the LED strip
-        if (self.address == 0x8002) && (self.data == 0xFF) {
+        if (self.address == END_ADDRESS) && (self.data == 0xFF) {
             self.enabled = true;
         }
         
