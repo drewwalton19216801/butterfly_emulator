@@ -2,8 +2,8 @@ use std::io::Write;
 
 use cpu6502::device::Device;
 
-const START_ADDRESS: u16 = 0x6000;
-const END_ADDRESS: u16 = 0x6002;
+const START_ADDRESS: u16 = 0x8000;
+const END_ADDRESS: u16 = 0x8002;
 
 // Global variable for the LED strip
 static mut LED_STRIP: [bool; 8] = [false; 8];
@@ -14,6 +14,9 @@ pub struct LedBlink {
     end_address: u16,
     address: u16,
     data: u8,
+
+    // Local variable for the LED strip state
+    enabled: bool,
 }
 
 impl LedBlink {
@@ -24,10 +27,11 @@ impl LedBlink {
             end_address: END_ADDRESS,
             address: 0,
             data: 0,
+            enabled: false,
         }
     }
 
-    pub fn blink(&self) {
+    pub fn update(&self) {
         unsafe {
             for i in 0..8 {
                 LED_STRIP[i] = (self.data & (1 << i)) != 0;
@@ -77,7 +81,14 @@ impl Device for LedBlink {
     }
 
     fn write(&mut self, _force_write: bool) {
-        // Just blink the LED strip
-        self.blink();
+        // If we wrote 0xFF to address 8002, enable the LED strip
+        if (self.address == 0x8002) && (self.data == 0xFF) {
+            self.enabled = true;
+        }
+        
+        // If the LED strip is enabled, update it
+        if self.enabled {
+            self.update();
+        }
     }
 }
