@@ -7,5 +7,6 @@ edition = "2021"
 
 [dependencies]
 argparse = "0.2.2"
+ctrlc = "3.4.1"
 #cpu6502 = { path = "../cpu6502"}
 cpu6502 = { git = "https://github.com/drewwalton19216801/cpu6502.git", branch = "dev" }

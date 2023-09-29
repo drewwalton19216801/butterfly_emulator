@@ -1,6 +1,5 @@
-use cpu6502::Cpu;
-
 use crate::emulator::devices::rom::Rom;
+use cpu6502::Cpu;
 
 use self::devices::bus::MainBus;
 
@@ -17,6 +16,11 @@ impl Emulator {
     }
 
     pub fn run(&mut self, speed_mhz: f64, num_cycles: Option<u64>) {
+        ctrlc::set_handler(move || {
+            std::process::exit(0);
+        })
+        .expect("Error setting Ctrl-C handler");
+
         let mut cycles_left = num_cycles.unwrap_or(u64::MAX);
 
         // Calculate the number of cycles to run per second
@@ -35,7 +39,7 @@ impl Emulator {
             self.cpu.clock();
             cycles_left -= 1;
             std::thread::sleep(std::time::Duration::from_secs_f64(1.0 / cycles_per_second));
-        }
+        }        
     }
 
     pub fn benchmark(&mut self, rom_path: String, address: u16, variant: String) {
