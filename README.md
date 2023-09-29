@@ -22,14 +22,18 @@ There are a few demo programs included right now, and they all work (yay!). You 
 
 ### multiply10-blink.asm
 
-    cargo run -- -r demos/blink.bin (you can add -d to print each instruction to stdout, not recommended with this demo)    
+    cargo run -- -r demos/multiply10-blink.bin (you can add -d to print each instruction to stdout, not recommended with this demo)    
 
 ### multiply10-noblink.asm
 
-    cargo run -- -r demos/blink.bin -d
+    cargo run -- -r demos/multiply10-noblink.bin -d
+
+### decimal-test.asm
+
+    cargo run -- -r demos/decimal-test.bin (you can add -d to print each instruction to stdout, not recommended with this demo)    
 
 ### Benchmarking
-By running the following command, you can run a very very unsophisticated benchmark.
+By running the following command, you can run a very very unsophisticated benchmark which uses blink.asm.
 
     cargo run -- --benchmark
 ### Command-line options

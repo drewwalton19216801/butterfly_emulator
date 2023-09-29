@@ -9,6 +9,9 @@ but has been modified to output the multiplication results to the 8-bit LED stri
 ## multiply10-noblink.asm
 multiply10loop-noblink.asm is the same thing as multiply10-blink.asm, but has been slightly modified to not output to the LED strip (in debug mode, the LED strip output mangles the debugging output. This will be fixed at some point).
 
+## decimal-test.asm
+decimal-test.asm is a program that counts from 0 to 50 in *decimal mode*, then counts back to 0, then back to 50, and so on, in an infinite loop. It outputs to the LED strip.
+
 ## Building
 ### blink.asm
 To build the blink demo, you can use the following command from the root of the project:
@@ -24,4 +27,9 @@ To build the multiply10loop demo, you can use the following command from the roo
 To build the multiply10loop-noblink demo, you can use the following command from the root of the project:
 
     ./demos/utils/vasm6592_oldstyle.exe -Fbin -dotdir ./demos/multiply10loop-noblink.asm -o ./demos/multiply10loop-noblink.bin
+
+### decimal-test.asm
+To build the decimal-test demo, you can use the following command from the root of the project:
+
+    ./demos/utils/vasm6592_oldstyle.exe -Fbin -dotdir ./demos/decimal-test.asm -o ./demos/decimal-test.bin
 
