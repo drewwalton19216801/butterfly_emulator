@@ -1,4 +1,6 @@
 # 6502 Demo programs
+What follows is a series of demo programs that can be used to test the emulator, and more specifically, the CPU emulatiom, which can be [found here](https://github.com/drewwalton19216801/cpu6502). Instructions for running these demos can be found [at the root of the project](https://github.com/drewwalton19216801/butterfly_emulator).
+
 ## blink.asm
 blink.asm is Ben Eater's LED blinking program from his [6502 video series](https://eater.net/6502), but has been modified to start at address $C000 instead of $8000.
 
