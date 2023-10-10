@@ -8,6 +8,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = env::args().collect();
     let (rom_path, address, debug, variant, speed, benchmark_mode) = parse_args(args);
 
+    // Make sure speed is greater than 0
+    if speed <= 0.0 {
+        println!("Error: Speed must be greater than 0");
+        std::process::exit(1);
+    }
+
     // Create the emulator
     let mut emulator = Emulator::new(debug);
 
