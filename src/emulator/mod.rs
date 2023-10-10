@@ -1,7 +1,7 @@
 use crate::emulator::devices::rom::Rom;
 use cpu6502::Cpu;
 
-use self::devices::bus::MainBus;
+use self::devices::{bus::MainBus, led_blink::LedBlink, ram32k::Ram32k};
 
 pub mod devices;
 pub struct Emulator {
@@ -39,7 +39,15 @@ impl Emulator {
             self.cpu.clock();
             cycles_left -= 1;
             std::thread::sleep(std::time::Duration::from_secs_f64(1.0 / cycles_per_second));
-        }        
+        }
+    }
+
+    pub fn init_devices(&mut self) {
+        self.cpu.bus.add_device(Box::new(Ram32k::new()));
+
+        self.cpu.bus.add_device(Box::new(LedBlink::new()));
+
+        self.cpu.bus.add_device(Box::new(Rom::new()));
     }
 
     pub fn benchmark(&mut self, rom_path: String, address: u16, variant: String) {

@@ -1,6 +1,6 @@
 use std::env;
 
-use emulator::{Emulator, devices::{led_blink::LedBlink, rom::Rom, ram32k::Ram32k}};
+use emulator::Emulator;
 
 mod emulator;
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -17,20 +17,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         std::process::exit(0);
     }
 
-    emulator
-        .cpu
-        .bus
-        .add_device(Box::new(Ram32k::new()));
-
-    emulator
-        .cpu
-        .bus
-        .add_device(Box::new(LedBlink::new()));
-
-    emulator
-        .cpu
-        .bus
-        .add_device(Box::new(Rom::new()));
+    emulator.init_devices();
 
     // Load the ROM file
     emulator.load_rom_from_path(&rom_path, address);
